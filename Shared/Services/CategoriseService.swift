@@ -88,7 +88,8 @@ class CategoriseService {
                 guard !classifications.isEmpty else { promise(.failure("No result")); return }
                 
                 if let topClassification = classifications
-                    .filter({ $0.confidence > 0.8 })
+                    .filter({ $0.identifier == "Cat" || $0.identifier == "Dog" })
+                    .filter({ $0.confidence > 0.9 })
                     .sorted( by: { $0.confidence > $1.confidence }).first {
                     promise(.success((id, topClassification.identifier)))
                 } else {
@@ -107,28 +108,6 @@ class CategoriseService {
         }
         .replaceError(with: ("", ""))
         .eraseToAnyPublisher()
-    }
-    
-    func processClassifications(for request: VNRequest, error: Error?) -> Future<String, Error> {
-        return Future { promise in
-            guard let results = request.results else {
-                promise(.failure("No results")); return
-            }
-            
-            let classifications = results as! [VNClassificationObservation]
-            
-            guard !classifications.isEmpty else {
-                promise(.failure("No results")); return
-            }
-            
-            if let topClassification = classifications
-                .filter({ $0.confidence > 0.1 })
-                .sorted( by: { $0.confidence > $1.confidence }).first {
-                promise(.success(topClassification.identifier))
-            } else {
-                promise(.failure("No results"))
-            }
-        }
     }
 }
 

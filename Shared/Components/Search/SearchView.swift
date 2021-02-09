@@ -23,8 +23,7 @@ struct SearchView: View {
             SearchContentView(query: $query,
                               filter: viewStore.state.filter,
                               isLoading: viewStore.state.isLoading,
-                              repos: viewStore.state.images,
-                              categorisation: viewStore.state.categorisation,
+                              images: viewStore.state.imagesToShow,
                               filters: viewStore.state.filters,
                               onCommit: { viewStore.send(SearchAction.loadImages(query: self.query)) },
                               reset: { viewStore.send(SearchAction.reset) },
@@ -39,8 +38,7 @@ struct SearchContentView: View {
     
     let filter: String
     let isLoading: Bool
-    let repos: [UnsplashImage]
-    let categorisation: [String: String]
+    let images: [UnsplashImage]
     let filters: [String]
     let onCommit: () -> Void
     let reset: () -> Void
@@ -58,7 +56,7 @@ struct SearchContentView: View {
                 }
                 HStack(alignment: .bottom) {
                     Spacer()
-                    Text("Choose you cat:")
+                    Text("Filter by:")
                     Menu {
                         ForEach(filters, id: \.self) { filter in
                             Button(filter, action: {
@@ -72,20 +70,14 @@ struct SearchContentView: View {
                 }
             }.padding()
             List {
-                ForEach(repos.filter { $0.urls?.regular != nil && $0.urls?.thumb != nil }
-                            .filter {
-                                if filter.count > 0 {
-                                    return self.categorisation[$0.id] == filter
-                                }
-                                return true
-                            }) { repo -> ImageRow in
+                ForEach(images) { repo -> ImageRow in
                     let image =  FetchImage(regularUrl: repo.urls!.regular!,
                                             lowDataUrl: repo.urls!.thumb!)
                     image.fetch()
                     return ImageRow(image: image,
                                     color: Color(hex: repo.color))
                 }
-                if repos.count > 0 {
+                if images.count > 0 {
                     Button("Load more", action: onCommit)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }

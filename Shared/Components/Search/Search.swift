@@ -11,10 +11,21 @@ import Combine
 
 struct SearchState: Equatable {
     var isLoading: Bool = false
+    var query: String = ""
     var page = 0
     var perPage = 30
     var orientation: Orientation? = nil
     var images: [UnsplashImage] = []
+    var imagesToShow: [UnsplashImage] {
+        return self.images
+            .filter { $0.urls?.regular != nil && $0.urls?.thumb != nil }
+            .filter {
+                if filter.count > 0 {
+                    return self.categorisation[$0.id] == filter
+                }
+                return true
+            }
+    }
     var categorisation: [String: String] = [:]
     var filters: [String] = ["Cat", "Dog"]
     var filter: String = ""
@@ -50,6 +61,11 @@ let searchReducer = Reducer<SearchState, SearchAction, SearchEnvironment> {
     state, action, environment in
     switch action {
     case .loadImages(let query):
+        if query != state.query {
+            state.page = 0
+            state.images = []
+            state.query = query
+        }
         state.isLoading = true
         let page = state.page + 1
         return environment.unsplashClient
