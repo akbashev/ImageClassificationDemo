@@ -21,7 +21,7 @@ Don't forget that variable should be in each scheme you run (like iOS and macOS 
 ### Frameworks
 
 Demo app uses SwiftUI and Combine.
-It's based on [Composable Architecture](http://www.dropwizard.io/1.0.2/docs/) for faster and more fun development.
+It's based on [Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture) for faster and more fun development.
 To fetch images—[Nuke](https://github.com/kean/Nuke) and it's plugins.
 
 ## Authors
@@ -30,4 +30,4 @@ To fetch images—[Nuke](https://github.com/kean/Nuke) and it's plugins.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License
